@@ -1,0 +1,29 @@
+version: '3'
+
+# This file is used to test HAProxy config changes locally during development.
+# For production usage, please avoid this setup.
+services:
+  haproxy:
+    container_name: haproxy
+    build:
+      context: .
+    environment:
+      RADIX_CORE_HOST: echo
+      RADIX_CORE_PORT: 30001
+      STATS_PORT: 8080
+      STATS_USERNAME: username
+      STATS_PASSWORD: password
+    ports:
+      - 30000:30000
+      - 8080:8080
+    volumes:
+      - ./config:/usr/local/etc/haproxy:ro
+      - ./run:/var/run/haproxy
+  echo:
+    container_name: echo
+    image: cjimti/go-echo
+    environment:
+      TCP_PORT: 30001
+      NODE_NAME: TcpEcho
+    ports:
+      - 30001:30001
